@@ -99,6 +99,7 @@
 
                     <style type="text/css">
                         td, th {
+                        min-height: 44px;
                         padding: 10px;
                         }
                     </style>
@@ -197,20 +198,27 @@
                     </div>
 
                     <div class="row" style="border: 1px solid black; margin: 0">
+                        <t t-set="earning_count" t-value="0"/>
+                        <t t-set="deduction_count" t-value="0"/>
+                        <t t-set="total_count" t-value="0"/>
                         <div class="col-6" style="padding: 0; border-right: 1px solid black;">
                             <table class="w-100">
                                 <thead>
                                     <tr>
-                                        <th class="w-75" style="border-right: 1px solid black; border-bottom: 1px solid black;">
+                                        <th class="w-75"
+                                            style="border-right: 1px solid black; border-bottom: 1px solid black;">
                                             Earning Component
                                         </th>
-                                        <th class="w-25" style="text-align: right; border-bottom: 1px solid black;">Amount</th>
+                                        <th class="w-25" style="text-align: right; border-bottom: 1px solid black;">
+                                            Amount
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr t-foreach="o.line_ids" t-as="li">
                                         <t t-if="li.category_id.name != 'Deduction' and li.category_id.name != 'Gross' and li.category_id.name != 'Net' and li.total != 0">
-                                            <td t-esc="li.name"/>
+                                            <t t-set="earning_count" t-value="earning_count + 1"/>
+                                            <td t-esc="li.name" style="border-right: 1px solid black;"/>
                                             <td class="text-right" t-esc="li.total"/>
                                         </t>
                                     </tr>
@@ -221,19 +229,28 @@
                             <table class="w-100">
                                 <thead>
                                     <tr>
-                                        <th class="w-75" style="border-right: 1px solid black; border-bottom: 1px solid black;">
+                                        <th class="w-75"
+                                            style="border-right: 1px solid black; border-bottom: 1px solid black;">
                                             Deduction Component
                                         </th>
-                                        <th class="w-25" style="text-align: right; border-bottom: 1px solid black;">Amount</th>
+                                        <th class="w-25" style="text-align: right; border-bottom: 1px solid black;">
+                                            Amount
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr t-foreach="o.line_ids" t-as="li">
                                         <!--Note: If you want to add any other category name in deduction then you just need to add 'and' operator and add it in t-if condition-->
                                         <t t-if="li.category_id.name == 'Deduction' and li.total != 0">
-                                            <td t-esc="li.name"/>
+                                            <t t-set="deduction_count" t-value="deduction_count + 1"/>
+                                            <td t-esc="li.name" style="border-right: 1px solid black;"/>
                                             <td class="text-right" t-esc="li.total * -1.0"/>
                                         </t>
+                                    </tr>
+                                    <t t-set="total_count" t-value="earning_count - deduction_count"/>
+                                    <tr t-foreach="range(total_count)" t-as="item">
+                                        <td style="border-right: 1px solid black; padding: 22.05px;"/>
+                                        <td/>
                                     </tr>
                                 </tbody>
                             </table>
@@ -244,7 +261,9 @@
                         <div class="col-6" style="padding: 0; border-right: 1px solid black;">
                             <table class="w-100">
                                 <tr>
-                                    <td class="w-75" style="border-right:1px solid black; width: 290px;">Total Earnings</td>
+                                    <td class="w-75" style="border-right:1px solid black; width: 290px;">Total
+                                        Earnings
+                                    </td>
                                     <t t-foreach="o.line_ids" t-as="line">
                                         <t t-if="line.name == 'Gross'">
                                             <td class="w-25 text-right" t-esc="line.total"/>
@@ -256,10 +275,13 @@
                         <div class="col-6" style="padding: 0;">
                             <table class="w-100">
                                 <tr>
-                                    <td class="w-75" style="border-right:1px solid black; width: 290px;">Total Deductions</td>
+                                    <td class="w-75" style="border-right:1px solid black; width: 290px;">Total
+                                        Deductions
+                                    </td>
                                     <t t-set="total_deductions" t-value="0.0"/>
                                     <t t-foreach="o.line_ids" t-as="line">
                                         <t t-if="line.category_id.name == 'Deduction'">
+                                            <t t-set="deduction_count" t-value="deduction_count + 1"/>
                                             <t t-set="line.total" t-value="total_deductions"/>
                                             <t t-set="total_deductions" t-value="total_deductions + line.total"/>
                                         </t>
@@ -283,8 +305,8 @@
                         </table>
                     </div>
 
-                    <div style="border: 1px solid black; border-top: 0; margin: 0; padding: 10px; font-weight: bold;">
-                        Net Amount in Words :
+                    <div style="border: 1px solid black; border-top: 0; margin: 0; padding: 10px;">
+                        <span style="font-weight: bold;">Net Amount in Words :</span>
                         <t t-foreach="o.line_ids" t-as="line">
                             <t t-if="line.name == 'Net Salary'">
                                 <t t-esc="line.total_in_words.title()"/>

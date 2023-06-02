@@ -6,7 +6,7 @@
             id="report_employee_payslip"
             string="Custom Payslip"
             model="hr.payslip"
-            report_type="qweb-html"
+            report_type="qweb-pdf"
             name="payroll_reports.report_payslip"
             file="payroll_reports.report_payslip"/>
 
